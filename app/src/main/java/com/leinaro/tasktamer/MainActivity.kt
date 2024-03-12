@@ -1,15 +1,28 @@
 package com.leinaro.tasktamer
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.dialog
+import androidx.navigation.compose.rememberNavController
 import com.leinaro.tasktamer.ui.theme.TaskTamerTheme
 
 class MainActivity : ComponentActivity() {
@@ -21,7 +34,7 @@ class MainActivity : ComponentActivity() {
                 Surface(
                     modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting("Android")
+                    MainScreen()
                 }
             }
         }
@@ -29,20 +42,83 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(
-    name: String,
-    modifier: Modifier = Modifier
+fun MainScreen(
+    navController: NavHostController = rememberNavController(),
 ) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
+    val activities = remember {
+        mutableStateListOf<Activity>()
+    }
+
+    /*Activity(
+                    id = "1",
+                    name = "Tarea 1",
+                    location = "Casa - 50 mts",
+                    description = "Obten 20 puntos por completar esta tarea",
+                    priority = 1,
+                ),
+                Activity(
+                    id = "2",
+                    name = "Tarea 1",
+                    location = "Casa - 50 mts",
+                    description = "Obten 20 puntos por completar esta tarea",
+                    priority = 1,
+                ),*/
+
+    var title by remember { mutableStateOf("") }
+
+    Scaffold(
+        topBar = {
+            MainTopBar(
+                navController = navController,
+                title = title,
+            )
+        },
+        floatingActionButton = {
+            CreateActivityButton(
+                onClick = {
+                    Log.e("iarl", "Create activity")
+                    activities.add(Activity(
+                        id = (activities.size+1).toString(),
+                        name = "Tarea 1",
+                        location = "Casa - 50 mts",
+                        description = "Obten 20 puntos por completar esta tarea",
+                        priority = 1,
+                    ))
+                   // navController.navigate(Routes.CreateActivity.route)
+                }
+            )
+        }
+    ) { paddingValues ->
+        NavHost(
+            modifier = Modifier.fillMaxSize(),
+            navController = navController,
+            startDestination = Routes.ActivitiesList.route
+        ) {
+            composable(Routes.ActivitiesList.route) {
+                title = "Task Tamer"
+                ActivitiesListScreen(
+                    modifier = Modifier.padding(paddingValues),
+                    navController = navController,
+                    activities = activities
+                )
+            }
+
+            dialog(Routes.Info.route) {
+                InfoScreen(listOf(
+                    Developer("Jesus Rios", "jd.rios2@uniandes.edu.co", "https://github.com/darios07"),
+                    Developer("Inés Rojas", "ia.rojas2@uniandes.edu.co", "https://github.com/leinaro")
+                ))
+            }
+        }
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
+fun MainScreenPreview() {
     TaskTamerTheme {
-        Greeting("Android")
+        MainScreen()
     }
 }
+
+
