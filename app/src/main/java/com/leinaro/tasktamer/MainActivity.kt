@@ -80,15 +80,7 @@ fun MainScreen(
             if (currentBackStateEntry?.destination?.route == Routes.ActivitiesList.route){
                 CreateActivityButton(
                     onClick = {
-                        Log.e("iarl", "Create activity")
-                        activities.add(Activity(
-                            id = (activities.size+1).toString(),
-                            name = "Tarea 1",
-                            location = "Casa - 50 mts",
-                            description = "Obten 20 puntos por completar esta tarea",
-                            priority = 1,
-                        ))
-                       // navController.navigate(Routes.CreateActivity.route)
+                        navController.navigate(Routes.CreateActivity.route)
                     }
                 )
             }
@@ -118,6 +110,19 @@ fun MainScreen(
 
             }
             composable(Routes.CreateActivity.route){
+                CreateActivityScreen(
+                    modifier = Modifier.padding(paddingValues),
+                    onSaveClick = {
+                        activities.add(Activity(
+                            id = (activities.size+1).toString(),
+                            name = "Tarea ${activities.size+1}",
+                            location = "Casa - 50 mts",
+                            description = "Obten 20 puntos por completar esta tarea",
+                            priority = 1,
+                        ))
+                        navController.navigateUp()
+                    }
+                )
 
             }
             composable(Routes.Register.route){
