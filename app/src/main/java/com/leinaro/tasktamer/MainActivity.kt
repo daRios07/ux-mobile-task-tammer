@@ -21,6 +21,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.dialog
 import androidx.navigation.compose.rememberNavController
 import com.leinaro.tasktamer.ui.theme.TaskTamerTheme
@@ -48,6 +49,8 @@ fun MainScreen(
     val activities = remember {
         mutableStateListOf<Activity>()
     }
+    val currentBackStateEntry by navController.currentBackStackEntryAsState()
+
 
     /*Activity(
                     id = "1",
@@ -74,19 +77,21 @@ fun MainScreen(
             )
         },
         floatingActionButton = {
-            CreateActivityButton(
-                onClick = {
-                    Log.e("iarl", "Create activity")
-                    activities.add(Activity(
-                        id = (activities.size+1).toString(),
-                        name = "Tarea 1",
-                        location = "Casa - 50 mts",
-                        description = "Obten 20 puntos por completar esta tarea",
-                        priority = 1,
-                    ))
-                   // navController.navigate(Routes.CreateActivity.route)
-                }
-            )
+            if (currentBackStateEntry?.destination?.route == Routes.ActivitiesList.route){
+                CreateActivityButton(
+                    onClick = {
+                        Log.e("iarl", "Create activity")
+                        activities.add(Activity(
+                            id = (activities.size+1).toString(),
+                            name = "Tarea 1",
+                            location = "Casa - 50 mts",
+                            description = "Obten 20 puntos por completar esta tarea",
+                            priority = 1,
+                        ))
+                       // navController.navigate(Routes.CreateActivity.route)
+                    }
+                )
+            }
         }
     ) { paddingValues ->
         NavHost(
@@ -119,7 +124,10 @@ fun MainScreen(
 
             }
             composable(Routes.Profile.route){
-
+                Profile(
+                    modifier = Modifier.padding(paddingValues),
+                    navController = navController
+                )
             }
 
 
