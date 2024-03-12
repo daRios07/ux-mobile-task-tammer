@@ -1,14 +1,13 @@
 package com.leinaro.tasktamer
 
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.shape.RoundedCornerShape
+import android.util.Log
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.Icons.Filled
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -17,20 +16,15 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -39,7 +33,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.leinaro.tasktamer.Routes.CreateActivity
 import com.leinaro.tasktamer.ui.theme.TaskTamerTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -48,12 +41,18 @@ fun MainTopBar(
     navController: NavController = rememberNavController(),
     title: String,
 ) {
-
+    val currentBackStateEntry by navController.currentBackStackEntryAsState()
     val color = Color.White
-
     var expanded by remember { mutableStateOf(false) }
+    var thereIsPreviousEntry by remember { mutableStateOf(false) }
 
-    TextFieldDefaults.MinHeight
+    LaunchedEffect(currentBackStateEntry){
+        thereIsPreviousEntry = navController.previousBackStackEntry != null
+        if (navController.previousBackStackEntry == null){
+            Log.e("iarl", "navController.previousBackStackEntry: ${navController.previousBackStackEntry}")
+        }
+    }
+
     CenterAlignedTopAppBar(
         title = {
             Text(
@@ -68,16 +67,28 @@ fun MainTopBar(
                 color = color
             )
         },
-        navigationIcon = {
-            IconButton(onClick = { navController.navigateUp() }) {
+        navigationIcon =  {
+            if(thereIsPreviousEntry) {
+                IconButton(onClick = { navController.navigateUp() }) {
+                    Icon(
+                        imageVector = Icons.Filled.ArrowBack,
+                        contentDescription = "Localized description",
+                        tint = color
+                    )
+                }
+            }
+        },
+        actions = {
+            IconButton(onClick = {
+                navController.navigate(Routes.Profile.route)
+            }) {
                 Icon(
-                    imageVector = Icons.Filled.ArrowBack,
+                    imageVector = Icons.Outlined.Person,
                     contentDescription = "Localized description",
                     tint = color
                 )
             }
-        },
-        actions = {
+
             IconButton(onClick = {
                 expanded = !expanded
             }) {

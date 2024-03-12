@@ -103,6 +103,26 @@ fun MainScreen(
                 )
             }
 
+            composable(Routes.Login.route){
+
+            }
+            composable(Routes.PasswordRecover.route){
+
+            }
+            composable(Routes.CodeVerify.route){
+
+            }
+            composable(Routes.CreateActivity.route){
+
+            }
+            composable(Routes.Register.route){
+
+            }
+            composable(Routes.Profile.route){
+
+            }
+
+
             dialog(Routes.Info.route) {
                 InfoScreen(listOf(
                     Developer("Jesus Rios", "jd.rios2@uniandes.edu.co", "https://github.com/darios07"),

@@ -72,11 +72,7 @@ private fun DeveloperItem(developer: Developer) {
 
             Row(
                 modifier = Modifier
-                    .padding(vertical = 8.dp)
-                    .clickable {
-                        // Open LinkedIn profile when clicked
-                        uriHandler.openUri(developer.email)
-                    },
+                    .padding(vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
@@ -88,7 +84,7 @@ private fun DeveloperItem(developer: Developer) {
                 )
 
                 Text(
-                    text = "Email",
+                    text = developer.email,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.primary
                 )
