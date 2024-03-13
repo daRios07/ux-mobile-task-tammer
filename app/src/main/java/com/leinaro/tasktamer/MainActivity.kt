@@ -46,6 +46,9 @@ class MainActivity : ComponentActivity() {
 fun MainScreen(
     navController: NavHostController = rememberNavController(),
 ) {
+    var user by remember {
+        mutableStateOf<User?>(null)
+    }
     val activities = remember {
         mutableStateListOf<Activity>()
     }
@@ -74,6 +77,7 @@ fun MainScreen(
             MainTopBar(
                 navController = navController,
                 title = title,
+                user = user,
             )
         },
         floatingActionButton = {
@@ -101,13 +105,118 @@ fun MainScreen(
             }
 
             composable(Routes.Login.route){
+                Login(
+                    modifier = Modifier.padding(paddingValues),
+                    onLogin = {
+                        user = User(
+                            name = "Jesus Adelo",
+                            email = "micorreo@uniandes.edu.co",
+                        )
 
+                        activities.add(Activity(
+                            id = (activities.size+1).toString(),
+                            name = "Tarea ${activities.size+1}",
+                            location = "Casa - 50 mts",
+                            description = "Obten 20 puntos por completar esta tarea",
+                            priority = 1,
+                        ))
+
+                        activities.add(Activity(
+                            id = (activities.size+1).toString(),
+                            name = "Tarea ${activities.size+1}",
+                            location = "Casa - 50 mts",
+                            description = "Obten 20 puntos por completar esta tarea",
+                            priority = 1,
+                        ))
+
+                        activities.add(Activity(
+                            id = (activities.size+1).toString(),
+                            name = "Tarea ${activities.size+1}",
+                            location = "Casa - 50 mts",
+                            description = "Obten 20 puntos por completar esta tarea",
+                            priority = 1,
+                        ))
+
+                        activities.add(Activity(
+                            id = (activities.size+1).toString(),
+                            name = "Tarea ${activities.size+1}",
+                            location = "Casa - 50 mts",
+                            description = "Obten 20 puntos por completar esta tarea",
+                            priority = 1,
+                        ))
+
+                        navController.navigate(Routes.ActivitiesList.route){
+                            popUpTo(navController.graph.id){
+                                inclusive = true
+                            }
+                        }
+
+                    },
+                    onRegister = {
+                        navController.navigate(Routes.Register.route)
+                    },
+                    onPasswordRecover = {
+                        navController.navigate(Routes.PasswordRecover.route)
+                    }
+                )
             }
             composable(Routes.PasswordRecover.route){
+                PasswordRecovery(
+                    modifier = Modifier.padding(paddingValues),
+                    onRecover = {
+                        navController.navigate(Routes.CodeVerify.route)
+                    }
+                )
 
             }
             composable(Routes.CodeVerify.route){
+                CodeVerify(
+                    modifier = Modifier.padding(paddingValues),
+                    onRecoery = {
+                        user = User(
+                            name = "Jesus Adelo",
+                            email = "micorreo@uniandes.edu.co",
+                        )
 
+                        activities.add(Activity(
+                            id = (activities.size+1).toString(),
+                            name = "Tarea ${activities.size+1}",
+                            location = "Casa - 50 mts",
+                            description = "Obten 20 puntos por completar esta tarea",
+                            priority = 1,
+                        ))
+
+                        activities.add(Activity(
+                            id = (activities.size+1).toString(),
+                            name = "Tarea ${activities.size+1}",
+                            location = "Casa - 50 mts",
+                            description = "Obten 20 puntos por completar esta tarea",
+                            priority = 1,
+                        ))
+
+                        activities.add(Activity(
+                            id = (activities.size+1).toString(),
+                            name = "Tarea ${activities.size+1}",
+                            location = "Casa - 50 mts",
+                            description = "Obten 20 puntos por completar esta tarea",
+                            priority = 1,
+                        ))
+
+                        activities.add(Activity(
+                            id = (activities.size+1).toString(),
+                            name = "Tarea ${activities.size+1}",
+                            location = "Casa - 50 mts",
+                            description = "Obten 20 puntos por completar esta tarea",
+                            priority = 1,
+                        ))
+
+                        navController.navigate(Routes.ActivitiesList.route){
+                            popUpTo(navController.graph.id){
+                                inclusive = true
+                            }
+                        }
+                    }
+                )
             }
             composable(Routes.CreateActivity.route){
                 CreateActivityScreen(
@@ -126,12 +235,78 @@ fun MainScreen(
 
             }
             composable(Routes.Register.route){
-
+                Register(
+                    modifier = Modifier.padding(paddingValues),
+                    onRegister = {
+                        user = User(
+                            name = "Jesus Adelo",
+                            email = "micorreo@uniandes.edu.co",
+                        )
+                        navController.navigate(Routes.ActivitiesList.route){
+                            popUpTo(navController.graph.id){
+                                inclusive = true
+                            }
+                        }
+                    }
+                )
             }
+
+            composable(Routes.Alarma.route){
+                Alarma(
+                    modifier = Modifier.padding(paddingValues),
+                    onComplete = {
+                        navController.navigate(Routes.CompleteActivity.route){
+                            popUpTo(Routes.ActivitiesList.route){
+                                inclusive = false
+                            }
+                        }
+                    },
+                    onPostpone = {
+                        navController.navigate(Routes.PosponerActivity.route){
+                            popUpTo(Routes.ActivitiesList.route){
+                                inclusive = false
+                            }
+                        }
+                    },
+                    onDismiss = {
+                        navController.navigate(Routes.ActivitiesList.route){
+                            popUpTo(navController.graph.id){
+                                inclusive = true
+                            }
+                        }
+                    },
+                )
+            }
+
+            dialog(Routes.CompleteActivity.route){
+                CompleteActivity(
+                    modifier = Modifier.padding(paddingValues),
+                    onCompletarActivityClick = {
+                        navController.navigateUp()
+                    }
+                    )
+            }
+
+            dialog(Routes.PosponerActivity.route){
+                PosponerActivity(
+                    modifier = Modifier.padding(paddingValues),
+                    onPosponerActivityClick = {
+                        navController.navigateUp()
+                    }
+                )
+            }
+
             composable(Routes.Profile.route){
                 Profile(
                     modifier = Modifier.padding(paddingValues),
-                    navController = navController
+                    logout = {
+                        user = null
+                        navController.navigate(Routes.ActivitiesList.route) {
+                            popUpTo(navController.graph.id) {
+                                inclusive = true
+                            }
+                        }
+                    }
                 )
             }
 

@@ -40,6 +40,7 @@ import com.leinaro.tasktamer.ui.theme.TaskTamerTheme
 fun MainTopBar(
     navController: NavController = rememberNavController(),
     title: String,
+    user: User? = null,
 ) {
     val currentBackStateEntry by navController.currentBackStackEntryAsState()
     val color = Color.White
@@ -53,75 +54,92 @@ fun MainTopBar(
         }
     }
 
-    CenterAlignedTopAppBar(
-        title = {
-            Text(
-                title,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                style = TextStyle(
-                    fontSize = 16.sp,
-                    //fontFamily = FontFamily(Font(font.oswald)),
-                    fontWeight = FontWeight(500),
-                ),
-                color = color
-            )
-        },
-        navigationIcon =  {
-            if(thereIsPreviousEntry) {
-                IconButton(onClick = { navController.navigateUp() }) {
+    if (currentBackStateEntry?.destination?.route == Routes.Alarma.route){
+        Log.e("iarl", "currentBackStateEntry: ${currentBackStateEntry}")
+    } else {
+        CenterAlignedTopAppBar(
+            title = {
+                Text(
+                    title,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        //fontFamily = FontFamily(Font(font.oswald)),
+                        fontWeight = FontWeight(500),
+                    ),
+                    color = color
+                )
+            },
+            navigationIcon =  {
+                if(thereIsPreviousEntry) {
+                    IconButton(onClick = { navController.navigateUp() }) {
+                        Icon(
+                            imageVector = Icons.Filled.ArrowBack,
+                            contentDescription = "Localized description",
+                            tint = color
+                        )
+                    }
+                }
+            },
+            actions = {
+                IconButton(onClick = {
+                    if (user == null){
+                        navController.navigate(Routes.Login.route)
+                    } else {
+                        navController.navigate(Routes.Profile.route)
+                    }
+                }) {
                     Icon(
-                        imageVector = Icons.Filled.ArrowBack,
+                        imageVector = Icons.Outlined.Person,
                         contentDescription = "Localized description",
                         tint = color
                     )
                 }
-            }
-        },
-        actions = {
-            IconButton(onClick = {
-                navController.navigate(Routes.Profile.route)
-            }) {
-                Icon(
-                    imageVector = Icons.Outlined.Person,
-                    contentDescription = "Localized description",
-                    tint = color
-                )
-            }
 
-            IconButton(onClick = {
-                expanded = !expanded
-            }) {
-                Icon(
-                    imageVector = Filled.MoreVert,
-                    contentDescription = "Localized description",
-                    tint = color
-                )
-            }
+                IconButton(onClick = {
+                    expanded = !expanded
+                }) {
+                    Icon(
+                        imageVector = Filled.MoreVert,
+                        contentDescription = "Localized description",
+                        tint = color
+                    )
+                }
 
-            DropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false }
-            ) {
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
 
-                DropdownMenuItem(
-                    text = { Text("Sobre Task Tamer") },
-                    onClick = {
-                        navController.navigate(Routes.Info.route)
-                        expanded = false
-                    },
-                    leadingIcon = {
-                        Icon(
-                            Icons.Outlined.Info,
-                            contentDescription = null
-                        )
-                    })
-            }
-        },
-        colors = TopAppBarDefaults.smallTopAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primary,
+                    DropdownMenuItem(
+                        text = { Text("Simular Alarma") },
+                        onClick = {
+                            navController.navigate(Routes.Alarma.route)
+                            expanded = false
+                        }
+                    )
+                    DropdownMenuItem(
+                        text = { Text("Sobre Task Tamer") },
+                        onClick = {
+                            navController.navigate(Routes.Info.route)
+                            expanded = false
+                        },
+                        leadingIcon = {
+                            Icon(
+                                Icons.Outlined.Info,
+                                contentDescription = null
+                            )
+                        })
+                }
+            },
+            colors = TopAppBarDefaults.smallTopAppBarColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+            )
         )
-    )
+    }
+
+
 }
 
 @Composable

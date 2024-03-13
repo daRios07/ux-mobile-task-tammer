@@ -17,11 +17,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import okhttp3.internal.userAgent
 
 @Composable
 fun Profile(
     modifier: Modifier = Modifier,
-    navController: NavController = rememberNavController(),
+    user: User? = null,
+    logout: () -> Unit = {},
 ) {
     Column(
         modifier = modifier.fillMaxHeight(),
@@ -41,7 +43,7 @@ fun Profile(
 
             Button(
                 onClick = {
-                    navController.navigate("login")
+                    logout()
                 }) {
                 Text(text = "Cerrar sesión")
             }

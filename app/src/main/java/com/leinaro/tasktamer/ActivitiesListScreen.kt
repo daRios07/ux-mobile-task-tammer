@@ -23,6 +23,11 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.leinaro.tasktamer.ui.theme.TaskTamerTheme
 
+data class User(
+    val name: String,
+    val email: String,
+)
+
 data class Activity(
     val id: String,
     val name: String,
